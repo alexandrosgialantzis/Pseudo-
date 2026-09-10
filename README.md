@@ -1,32 +1,61 @@
 # Pseudo IDE
 
-Pseudo IDE is a web tool to write, read, and run code written in the Pseudo programming language.
+A web editor for a small made up language called Pseudo. You type code, press run, and the output appears below.
 
-## Code Structure
 
-The project is built with Angular and splits into three main parts.
+## How the language runs
 
-### 1. Tokenizing
-The Lexer reads raw input text character by character. It turns words, numbers, and symbols into simple tokens. The Position Tracker monitors line and column numbers to pinpoint errors.
+Three stages, each in `src/app/logic`.
 
-### 2. Parsing
-The Parser takes the tokens and builds an Abstract Syntax Tree (AST). It uses grammar rules to check if the code structure is correct. Each node in the tree represents an action, such as a variable assignment, loop, or math operation.
+**Lexer** reads the raw text one character at a time and turns it into tokens. A position tracker follows line and column, which is how errors can point at the exact spot.
 
-### 3. Execution
-The Interpreter walks through the AST nodes one by one to run the code.
-- Data Types: Handles numbers, strings, lists, and functions.
-- Symbol Table: Stores variables and function definitions in memory while the code runs.
-- Context: Keeps track of current execution environments and parent scopes.
+**Parser** takes those tokens and builds a tree. Each node is one action, an assignment, a loop, a piece of maths. This is where bad structure is caught.
 
-## User Interface
+**Interpreter** walks the tree and runs it. A symbol table holds the variables, and a context object holds the current scope and points at its parent, so a function can see the names outside it.
 
-- Code Editor: A text area where users type Pseudo code.
-- Run Button: Triggers the interpreter service.
-- Output Console: Displays standard output messages or runtime errors.
+## The app
 
-## How to Run
+`code-editor` is where you type. `run-button` calls the interpreter service. `output-console` shows the result or the error. `drag-bar` lets you resize the two panels.
 
-1. Install dependencies: npm install
-2. Start the local server: ng serve
-3. Open a browser and navigate to http://localhost:4200
-4. 
+## Run it
+
+This project is from 2020 and needs **Node 14**. On Node 16 or newer it fails during install or with an OpenSSL error at startup.
+
+Check what you have:
+
+```
+node -v
+```
+
+If it is not 14, install nvm and switch:
+
+```
+nvm install 14
+nvm use 14
+```
+
+Then:
+
+```
+npm install
+npx ng serve
+```
+
+Open http://localhost:4200
+
+## If it still fails
+
+Use `npx ng serve`, not `ng serve`. The second one needs the Angular CLI installed globally, and a newer global CLI will refuse to run an Angular 9 project.
+
+If npm install stops on a peer dependency error:
+
+```
+npm install --legacy-peer-deps
+```
+
+If you must stay on a new Node version, this works but is a patch, not a fix:
+
+```
+export NODE_OPTIONS=--openssl-legacy-provider
+npx ng serve
+```
